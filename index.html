@@ -266,6 +266,33 @@
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         .error-msg { color: var(--danger-color); font-size: 11px; margin-top: 6px; display: none; font-weight: 600; }
     </style>
+
+    <!-- Mobile Layout Overflow Fixes (Added without modifying previous code) -->
+    <style>
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            position: relative !important;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box !important;
+        }
+        #admin-wrapper, .main-content, .section-box {
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+        }
+        .item-text, .item-info, .switch-container > div {
+            min-width: 0 !important; /* Forces flex children to stay within their parent's width */
+        }
+        .list-item, .list-toolbar, .list-container, .split-layout, .form-group {
+            max-width: 100% !important;
+        }
+        h1, h2, h3, h4, p, span, label {
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+    </style>
 </head>
 <body>
 
