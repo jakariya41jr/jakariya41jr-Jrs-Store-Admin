@@ -2,309 +2,336 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JRS Store - Advanced Admin Control Center</title>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Clean SaaS Dark Theme Colors */
-            --bg-body: #0f172a;        /* slate-900 */
-            --bg-surface: #1e293b;     /* slate-800 */
-            --bg-input: #0f172a;       /* slate-900 */
-            --bg-hover: #334155;       /* slate-700 */
-            --border-color: #334155;   /* slate-700 */
-            --primary: #3b82f6;        /* blue-500 */
-            --primary-hover: #2563eb;  /* blue-600 */
-            --danger: #ef4444;         /* red-500 */
-            --danger-hover: #dc2626;   /* red-600 */
-            --success: #10b981;        /* emerald-500 */
-            --warning: #f59e0b;        /* amber-500 */
-            --text-main: #f8fafc;      /* slate-50 */
-            --text-muted: #94a3b8;     /* slate-400 */
-            --radius: 8px;
+            --bg-color: #05050b;
+            --header-bg: #0c0c16;
+            --card-bg: rgba(18, 18, 32, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --border-color: #1a1a2e;
+            --accent-color: #00f2fe;
+            --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --purple-gradient: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%);
+            --orange-gradient: linear-gradient(135deg, #FF512F 0%, #DD2476 100%);
+            --green-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --danger-color: #ff4d4d;
+            --warning-color: #ffb703;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(14, 14, 26, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
         
+        html, body { 
+            width: 100%;
+            height: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
         body { 
-            background-color: var(--bg-body); 
+            background-color: var(--bg-color); 
             color: var(--text-main); 
             display: flex; 
             height: 100vh; 
-            width: 100vw;
+            height: 100dvh;
             overflow: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(127, 0, 255, 0.05) 0%, transparent 40%);
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
 
         /* Login Screen */
         #login-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--bg-body); 
+            background: radial-gradient(circle at center, #101021 0%, #030307 100%); 
             display: flex; justify-content: center; align-items: center; z-index: 10000; 
         }
         .login-box { 
-            background: var(--bg-surface); 
-            padding: 32px; border-radius: 12px; 
-            border: 1px solid var(--border-color); 
-            width: 90%; max-width: 360px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 20px; 
+            border: 1px solid var(--glass-border); 
+            width: 90%; max-width: 380px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 25px rgba(0, 242, 254, 0.08); 
             text-align: center; 
         }
-        .login-box .logo-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); margin-bottom: 16px; }
-        .login-box h2 { color: var(--text-main); margin-bottom: 24px; font-size: 20px; font-weight: 700; }
+        .login-box .logo-img { width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--accent-color); margin-bottom: 15px; box-shadow: 0 0 20px rgba(0,242,254,0.3); }
+        .login-box h2 { color: #fff; margin-bottom: 20px; font-size: 20px; font-weight: 800; }
         
-        /* Form Elements */
-        .form-group { margin-bottom: 16px; text-align: left; width: 100%; }
-        label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--text-muted); font-weight: 500; }
+        /* Form Elements - Made Compact */
+        .form-group { margin-bottom: 14px; text-align: left; }
+        label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; }
         input, select, textarea { 
             width: 100%; padding: 10px 12px; 
-            background: var(--bg-input); 
-            border: 1px solid var(--border-color); 
-            color: var(--text-main); border-radius: var(--radius); font-size: 14px; 
-            transition: border-color 0.2s ease; 
+            background: rgba(8, 8, 16, 0.75); 
+            border: 1px solid var(--card-border); 
+            color: #fff; border-radius: 10px; font-size: 13px; 
+            transition: all 0.3s ease; 
         }
         input:focus, select:focus, textarea:focus { 
-            border-color: var(--primary); outline: none; 
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); 
+            border-color: var(--accent-color); outline: none; 
+            box-shadow: 0 0 10px rgba(0,242,254,0.2); 
+            background: rgba(12, 12, 24, 0.95);
         }
-        
         button[type="submit"], .btn-primary { 
-            width: 100%; padding: 10px 16px; 
-            background: var(--primary); border: none; 
-            color: #fff; font-weight: 600; border-radius: var(--radius); 
-            cursor: pointer; font-size: 14px; transition: background 0.2s; 
+            width: 100%; padding: 12px; 
+            background: var(--accent-gradient); border: none; 
+            color: #05050a; font-weight: 800; border-radius: 10px; 
+            cursor: pointer; font-size: 14px; transition: all 0.3s ease; 
             display: inline-flex; justify-content: center; align-items: center; gap: 8px;
         }
-        button[type="submit"]:hover, .btn-primary:hover { background: var(--primary-hover); }
+        button[type="submit"]:hover, .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0,242,254,0.4); 
+        }
 
         .btn-secondary {
-            background: transparent; color: var(--text-main);
-            border: 1px solid var(--border-color); font-weight: 600;
-            padding: 10px; border-radius: var(--radius); cursor: pointer;
-            width: 100%; margin-top: 8px; transition: all 0.2s; font-size: 14px;
+            background: rgba(255, 255, 255, 0.08); color: #fff;
+            border: 1px solid var(--card-border); font-weight: 600;
+            padding: 10px; border-radius: 10px; cursor: pointer;
+            width: 100%; margin-top: 8px; transition: all 0.3s ease; font-size: 13px;
         }
-        .btn-secondary:hover { background: var(--bg-hover); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
 
-        /* Toggle Switch */
+        /* Toggle Switch Styling */
         .switch-container {
             display: flex; align-items: center; justify-content: space-between;
-            background: var(--bg-body); padding: 12px 16px; border-radius: var(--radius);
-            border: 1px solid var(--border-color); margin-bottom: 20px;
+            background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: 12px;
+            border: 1px solid var(--card-border); margin-bottom: 16px;
         }
-        .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #2a2a44; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: #38ef7d; }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         /* Dashboard Layout */
-        #admin-wrapper { display: none; width: 100%; height: 100%; position: relative; }
+        #admin-wrapper { display: none; width: 100%; height: 100%; position: relative; overflow: hidden; }
         
         /* Sidebar */
         .sidebar { 
-            width: 260px; background: var(--bg-surface); 
+            width: 250px; background: var(--header-bg); 
             border-right: 1px solid var(--border-color); 
             display: flex; flex-direction: column; height: 100%; 
-            z-index: 999; transition: transform 0.3s ease;
-            flex-shrink: 0; /* Prevents sidebar from shrinking */
+            z-index: 999; transition: all 0.3s ease;
         }
-        .logo-area { padding: 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color); }
-        .logo-area img { width: 32px; height: 32px; border-radius: 6px; }
-        .logo-area span { font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .logo-area { padding: 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); }
+        .logo-area img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--accent-color); }
+        .logo-area span { font-size: 18px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .nav-menu { padding: 16px 12px; flex: 1; overflow-y: auto; }
+        .nav-menu { padding: 15px 10px; flex: 1; overflow-y: auto; }
         .nav-item { 
-            padding: 10px 14px; margin-bottom: 4px; border-radius: var(--radius); 
+            padding: 11px 14px; margin-bottom: 5px; border-radius: 10px; 
             cursor: pointer; display: flex; align-items: center; gap: 12px; 
-            color: var(--text-muted); font-size: 14px; font-weight: 500; 
+            color: var(--text-muted); font-size: 13px; font-weight: 600; 
             transition: all 0.2s ease; 
         }
-        .nav-item:hover { background: var(--bg-hover); color: var(--text-main); }
-        .nav-item.active { background: rgba(59, 130, 246, 0.15); color: var(--primary); font-weight: 600; }
-        .nav-item i { width: 20px; text-align: center; font-size: 15px; }
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(0, 242, 254, 0.1); 
+            color: var(--accent-color); 
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            transform: translateX(3px);
+        }
+        .nav-item i { width: 18px; text-align: center; font-size: 14px; }
         
         .logout-btn { 
-            margin: 16px; padding: 10px; 
-            background: transparent; color: var(--danger); 
-            border: 1px solid var(--border-color); border-radius: var(--radius); 
-            cursor: pointer; font-weight: 600; display: flex; justify-content: center; 
-            align-items: center; gap: 8px; font-size: 14px; transition: all 0.2s; 
+            margin: 15px; padding: 12px; 
+            background: rgba(255, 77, 77, 0.08); color: var(--danger-color); 
+            border: 1px solid rgba(255, 77, 77, 0.2); border-radius: 10px; 
+            cursor: pointer; font-weight: 700; display: flex; justify-content: center; 
+            align-items: center; gap: 8px; font-size: 13px; transition: all 0.3s ease; 
         }
-        .logout-btn:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
+        .logout-btn:hover { background: var(--danger-color); color: #fff; }
 
-        /* Main Content - FIXING THE OVERFLOW ISSUE */
+        /* Main Content */
         .main-content { 
             flex: 1; 
-            min-width: 0; /* CRITICAL FIX: prevents flex child from expanding beyond screen */
+            height: 100%;
             overflow-y: auto; 
-            overflow-x: hidden; 
-            background: var(--bg-body); 
-            padding: 24px; 
+            background: var(--bg-color); 
+            padding: 20px; 
+            min-width: 0;
         }
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top-header h1 { font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
         
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .top-header h1 { font-size: 20px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        .section-box { display: none; background: var(--glass-bg); backdrop-filter: blur(16px); padding: 22px; border-radius: 18px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .active-section { display: block; animation: fadeIn 0.3s ease; }
         
-        .section-box { 
-            display: none; background: var(--bg-surface); 
-            padding: 24px; border-radius: 12px; 
-            border: 1px solid var(--border-color); 
-            width: 100%; max-width: 100%; /* Ensure it doesn't cross screen */
-        }
-        .active-section { display: block; animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        /* Stats Grid - Compacted */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { 
-            background: var(--bg-body); padding: 20px; border-radius: 12px; 
-            border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; 
+            background: var(--card-bg); padding: 16px; border-radius: 14px; 
+            border: 1px solid var(--card-border); display: flex; align-items: center; gap: 14px; 
+            transition: all 0.3s ease;
         }
-        .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 20px; flex-shrink: 0; }
-        .stat-info span { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
-        .stat-info h3 { color: var(--text-main); font-size: 24px; font-weight: 700; margin-top: 4px; }
+        .stat-card:hover { transform: translateY(-3px); border-color: rgba(0,242,254,0.3); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #fff; flex-shrink: 0; }
+        .stat-info span { color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-info h3 { color: #fff; font-size: 22px; font-weight: 800; margin-top: 2px; }
         
-        .text-blue { color: var(--primary); background: rgba(59, 130, 246, 0.1); }
-        .text-emerald { color: var(--success); background: rgba(16, 185, 129, 0.1); }
-        .text-amber { color: var(--warning); background: rgba(245, 158, 11, 0.1); }
-        .text-red { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
-        .text-indigo { color: #6366f1; background: rgba(99, 102, 241, 0.1); }
+        .bg-blue { background: var(--accent-gradient); color: #000; }
+        .bg-green { background: var(--green-gradient); color: #000; }
+        .bg-purple { background: var(--purple-gradient); }
+        .bg-orange { background: var(--orange-gradient); }
+        .bg-red { background: linear-gradient(135deg, #eb3349, #f45c43); }
 
-        /* Split Layout */
-        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
-        @media (max-width: 1024px) { .split-layout { grid-template-columns: 1fr; } }
+        /* Split Layout - Reduced Gaps */
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 992px) { .split-layout { grid-template-columns: 1fr; } }
         
-        /* List View & Toolbar */
+        /* List View & Toolbar - Space Optimized */
         .list-toolbar { 
             display: flex; justify-content: space-between; align-items: center; 
-            background: var(--bg-body); padding: 12px 16px; 
-            border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border-color); border-bottom: none; 
+            background: rgba(10, 10, 20, 0.85); padding: 12px 16px; 
+            border-radius: 12px 12px 0 0; border: 1px solid var(--card-border); border-bottom: none; 
         }
         .list-container { 
-            background: var(--bg-body); padding: 12px; 
-            border-radius: 0 0 var(--radius) var(--radius); border: 1px solid var(--border-color); 
-            max-height: 450px; overflow-y: auto; overflow-x: hidden;
+            background: rgba(5, 5, 12, 0.6); padding: 12px; 
+            border-radius: 0 0 12px 12px; border: 1px solid var(--card-border); 
+            max-height: 400px; overflow-y: auto; 
         }
-        .list-container.standalone { border-radius: var(--radius); }
+        .list-container.standalone { border-radius: 12px; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px; margin-bottom: 8px; border-radius: var(--radius);
-            background: var(--bg-surface); border: 1px solid var(--border-color); 
-            gap: 12px; width: 100%; box-sizing: border-box;
+            padding: 10px 12px; margin-bottom: 8px; border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.03); 
+            gap: 12px; transition: all 0.2s ease;
         }
-        .item-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; /* Fixes text overflow in flex */ }
-        .item-img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: var(--bg-body); flex-shrink: 0; }
-        .item-text { min-width: 0; flex: 1; }
-        .item-text h4 { font-size: 14px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-text p { font-size: 12px; color: var(--text-muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .list-item:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255,255,255,0.1); }
+        .item-info { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .item-img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: var(--card-bg); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
+        .item-text { overflow: hidden; flex: 1; }
+        .item-text h4 { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; word-break: break-word; }
         
         /* Action Buttons */
-        .action-btns { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        .edit-btn, .del-btn { 
-            border: none; width: 32px; height: 32px; border-radius: 6px; 
-            cursor: pointer; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;
-            transition: all 0.2s;
+        .action-btns { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .edit-btn, .del-btn, .view-btn { 
+            border: none; width: 32px; height: 32px; border-radius: 8px; 
+            cursor: pointer; transition: all 0.2s ease; 
+            display: inline-flex; justify-content: center; align-items: center; font-size: 13px;
         }
-        .edit-btn { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .edit-btn:hover { background: var(--primary); color: #fff; }
-        .del-btn { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .del-btn:hover { background: var(--danger); color: #fff; }
+        .edit-btn { background: rgba(0, 242, 254, 0.1); color: var(--accent-color); }
+        .edit-btn:hover { background: var(--accent-color); color: #000; }
+        .del-btn { background: rgba(255, 77, 77, 0.1); color: var(--danger-color); }
+        .del-btn:hover { background: var(--danger-color); color: #fff; }
 
-        /* Checkbox */
-        .item-checkbox { width: 16px !important; height: 16px !important; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
+        /* Checkbox & Bulk Actions */
+        .item-checkbox { width: 16px !important; height: 16px !important; cursor: pointer; accent-color: var(--accent-color); flex-shrink: 0; }
         .bulk-del-btn { 
-            background: var(--danger); color: #fff; border: none; 
+            background: var(--danger-color); color: #fff; border: none; 
             padding: 6px 12px; border-radius: 6px; cursor: pointer; 
-            font-size: 12px; font-weight: 600; display: none; align-items: center; gap: 6px; 
+            font-size: 11px; font-weight: 700; transition: all 0.3s ease; 
+            display: none; align-items: center; gap: 5px; 
         }
 
         /* Toast Notification */
         #toast { 
-            position: fixed; bottom: 24px; right: 24px; 
-            background: var(--text-main); color: var(--bg-body); 
-            padding: 12px 20px; border-radius: var(--radius); font-weight: 600; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
-            transform: translateY(100px); opacity: 0; transition: all 0.3s; 
-            z-index: 99999; display: flex; align-items: center; gap: 10px; font-size: 14px;
+            position: fixed; bottom: 20px; right: 20px; 
+            background: var(--accent-gradient); color: #05050a; 
+            padding: 12px 20px; border-radius: 10px; font-weight: 700; 
+            box-shadow: 0 10px 25px rgba(0,242,254,0.3); 
+            transform: translateY(100px); opacity: 0; transition: all 0.4s ease; 
+            z-index: 99999; display: flex; align-items: center; gap: 10px; font-size: 13px;
         }
         #toast.show { transform: translateY(0); opacity: 1; }
+        .error-msg { color: var(--danger-color); font-size: 12px; margin-top: 8px; display: none; font-weight: 600; }
 
-        /* Mobile Adjustments - FIXING THE HORIZONTAL SCROLL */
+        /* Mobile Header & Overlay */
         .mobile-header {
             display: none; align-items: center; justify-content: space-between;
-            margin-bottom: 20px; background: var(--bg-surface); padding: 12px 16px;
+            margin-bottom: 15px; background: var(--header-bg); padding: 12px 16px;
             border-radius: 12px; border: 1px solid var(--border-color);
-            width: 100%; box-sizing: border-box;
         }
-        .mobile-header button { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; }
-        .mobile-header h2 { font-size: 16px; font-weight: 700; margin: 0; }
+        .mobile-header button { background: none; border: none; color: var(--accent-color); font-size: 20px; cursor: pointer; }
+        .mobile-header h2 { font-size: 16px; color: #fff; font-weight: 800; margin: 0; }
 
         .sidebar-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(2px); z-index: 998; display: none;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 998; display: none;
         }
         .sidebar-overlay.active { display: block; }
 
+        /* Extreme Mobile Optimizations */
         @media (max-width: 768px) {
-            .sidebar { position: fixed; transform: translateX(-100%); top: 0; left: 0; box-shadow: 4px 0 24px rgba(0,0,0,0.5); }
-            .sidebar.open { transform: translateX(0); }
+            .sidebar { position: fixed; left: -260px; top: 0; box-shadow: 10px 0 35px rgba(0,0,0,0.8); }
+            .sidebar.open { left: 0; }
             .mobile-header { display: flex; }
-            .main-content { padding: 16px; width: 100%; } /* Ensures content fits screen */
-            .top-header { margin-bottom: 16px; }
+            .main-content { padding: 12px; width: 100%; }
+            .top-header { margin-bottom: 12px; }
             .top-header h1 { font-size: 18px; }
             
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .stat-card { padding: 16px; flex-direction: column; text-align: center; gap: 12px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+            .stat-card { padding: 12px; gap: 10px; border-radius: 12px; flex-direction: column; text-align: center; justify-content: center; }
+            .stat-icon { width: 38px; height: 38px; font-size: 16px; border-radius: 10px; margin: 0 auto; }
+            .stat-info h3 { font-size: 18px; margin-top: 4px; }
+            .stat-info span { font-size: 10px; }
             
-            .section-box { padding: 16px; }
-            .split-layout { gap: 20px; }
+            .section-box { padding: 15px; border-radius: 14px; }
+            .split-layout { gap: 15px; }
+            .form-group { margin-bottom: 12px; }
+            input, select, textarea { padding: 10px; font-size: 12px; }
+            .list-container { max-height: 320px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Success!</span></div>
+    <!-- Toast Notification -->
+    <div id="toast"><i class="fas fa-check-circle fa-lg"></i> <span id="toast-msg">Success!</span></div>
 
     <!-- Login Screen -->
     <div id="login-screen">
         <div class="login-box">
             <img src="https://github.com/jakariya41jr/Photos-Row-Link/raw/refs/heads/main/file_00000000798482079f843eb6f797f91d.png" class="logo-img" alt="Logo">
-            <h2>Sign in to JRS</h2>
+            <h2>JRS Admin Portal</h2>
             <form id="login-form">
                 <div class="form-group">
-                    <label>Email Address</label>
+                    <label><i class="fas fa-envelope"></i> ইমেইল এড্রেস</label>
                     <input type="email" id="admin-email" required placeholder="admin@jrs.com">
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
+                    <label><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
                     <input type="password" id="admin-pass" required placeholder="••••••••">
                 </div>
-                <div id="error-box" style="color: var(--danger); font-size: 13px; margin-bottom: 12px; display: none; font-weight: 500;"></div>
-                <button type="submit">Sign In</button>
+                <div id="error-box" class="error-msg"></div>
+                <button type="submit"><i class="fas fa-right-to-bracket"></i> লগইন করুন</button>
             </form>
         </div>
     </div>
 
-    <!-- Admin Wrapper -->
+    <!-- Admin Dashboard Wrapper -->
     <div id="admin-wrapper">
+        
+        <!-- Mobile Overlay -->
         <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="logo-area">
                 <img src="https://github.com/jakariya41jr/Photos-Row-Link/raw/refs/heads/main/file_00000000798482079f843eb6f797f91d.png" alt="Logo">
-                <span>JRS Admin</span>
+                <span>JRS Control</span>
             </div>
             <div class="nav-menu">
                 <div class="nav-item active" onclick="switchSection('dashboard', this)"><i class="fas fa-chart-pie"></i> Dashboard</div>
@@ -318,121 +345,166 @@
                 <div class="nav-item" onclick="switchSection('messages', this)"><i class="fas fa-comments"></i> User Messages</div>
                 <div class="nav-item" onclick="switchSection('settings', this)"><i class="fas fa-sliders"></i> Site Settings</div>
             </div>
-            <button class="logout-btn" id="logout-btn"><i class="fas fa-right-from-bracket"></i> Logout</button>
+            <button class="logout-btn" id="logout-btn"><i class="fas fa-power-off"></i> লগআউট</button>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Main Content Area -->
         <main class="main-content">
+
+            <!-- Mobile Header Menu Toggle -->
             <div class="mobile-header">
                 <h2>JRS Admin Hub</h2>
-                <button onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <button onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></button>
             </div>
             
-            <!-- 1. Dashboard -->
+            <!-- 1. Dashboard Overview -->
             <div id="dashboard" class="section-box active-section">
-                <div class="top-header"><h1>System Overview</h1></div>
+                <div class="top-header">
+                    <h1><i class="fas fa-bolt" style="color: var(--accent-color);"></i> System Overview</h1>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon text-blue"><i class="fas fa-mobile-screen"></i></div>
+                        <div class="stat-icon bg-blue"><i class="fas fa-mobile-screen-button"></i></div>
                         <div class="stat-info"><span>Total Apps</span><h3 id="stat-apps">0</h3></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon text-indigo"><i class="fas fa-rectangle-ad"></i></div>
+                        <div class="stat-icon bg-purple"><i class="fas fa-rectangle-ad"></i></div>
                         <div class="stat-info"><span>Ads Status</span><h3 id="stat-ads-status">OFF</h3></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon text-emerald"><i class="fas fa-wrench"></i></div>
+                        <div class="stat-icon bg-green"><i class="fas fa-screwdriver-wrench"></i></div>
                         <div class="stat-info"><span>Tools</span><h3 id="stat-tools">0</h3></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon text-amber"><i class="fas fa-folder"></i></div>
+                        <div class="stat-icon bg-orange"><i class="fas fa-folder-tree"></i></div>
                         <div class="stat-info"><span>Categories</span><h3 id="stat-cats">0</h3></div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon text-red"><i class="fas fa-bell"></i></div>
+                        <div class="stat-icon bg-red"><i class="fas fa-bell"></i></div>
                         <div class="stat-info"><span>Notices</span><h3 id="stat-notices">0</h3></div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. Ad Management -->
+            <!-- 2. Ad Management Control Panel -->
             <div id="ads" class="section-box">
-                <div class="top-header"><h1>Ad Management</h1></div>
+                <div class="top-header">
+                    <h1><i class="fas fa-rectangle-ad" style="color: #E100FF;"></i> Ad Management Control</h1>
+                </div>
                 <form id="ad-settings-form">
                     <div class="switch-container">
                         <div>
-                            <h4 style="font-size:14px; font-weight:600;">Master Monetization</h4>
-                            <p style="color:var(--text-muted); font-size:12px; margin-top:2px;">Enable or disable all ads globally</p>
+                            <h4 style="color:#fff; font-size:14px;">Master Monetization / Ad Status</h4>
+                            <p style="color:var(--text-muted); font-size:11px; margin-top:3px;">ওয়েবসাইটে বিজ্ঞাপন প্রর্দশন বা বন্ধ করার অন/অফ সুইচ</p>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="ad-master-status">
                             <span class="slider"></span>
                         </label>
                     </div>
+
                     <div class="split-layout">
                         <div>
                             <div class="form-group">
-                                <label>Adsterra Direct Link</label>
-                                <input type="url" id="ad-adsterra-link" placeholder="https://...">
+                                <label><i class="fas fa-link"></i> Adsterra Direct Link (Smart Link URL)</label>
+                                <input type="url" id="ad-adsterra-link" placeholder="https://www.highrevenuegate.com/xxxxx">
                             </div>
                             <div class="form-group">
-                                <label>Banner Image URL</label>
-                                <input type="url" id="ad-banner-img" placeholder="https://i.ibb.co/...">
+                                <label><i class="fas fa-image"></i> Sponsorship Banner Image URL</label>
+                                <input type="url" id="ad-banner-img" placeholder="https://i.ibb.co/banner.jpg">
                             </div>
                             <div class="form-group">
-                                <label>Banner Target URL</label>
-                                <input type="url" id="ad-banner-target" placeholder="https://...">
+                                <label><i class="fas fa-arrow-pointer"></i> Sponsorship Banner Target Redirect URL</label>
+                                <input type="url" id="ad-banner-target" placeholder="https://example.com/target-page">
                             </div>
                         </div>
+
                         <div>
                             <div class="form-group">
-                                <label>Custom Ad Script (Monetag/PropellerAds)</label>
-                                <textarea id="ad-custom-script" rows="8" placeholder="Paste script tags here..."></textarea>
+                                <label><i class="fas fa-code"></i> Custom Ad Script / HTML Tag (Monetag / PropellerAds)</label>
+                                <textarea id="ad-custom-script" rows="8" placeholder="Paste JavaScript or HTML Tag Script code here..."></textarea>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn-primary" style="margin-top: 10px;">Save Ad Settings</button>
+                    
+                    <button type="submit" class="btn-primary" style="margin-top: 10px;">
+                        <i class="fas fa-floppy-disk"></i> Save Ad Settings
+                    </button>
                 </form>
             </div>
 
-            <!-- Banners -->
+            <!-- NEW: Banner & Slider Management -->
             <div id="banners" class="section-box">
-                <div class="top-header"><h1 id="banner-form-title">Banner Control</h1></div>
+                <div class="top-header">
+                    <h1 id="banner-form-title"><i class="fas fa-images" style="color: #00f2fe;"></i> Home Banner & Slider Control</h1>
+                </div>
                 <div class="split-layout">
                     <form id="banner-form">
                         <input type="hidden" id="editing-banner-key" value="">
-                        <div class="form-group"><label>Title</label><input type="text" id="banner-title" required></div>
-                        <div class="form-group"><label>Image URL</label><input type="url" id="banner-image" required></div>
-                        <div class="form-group"><label>Target URL</label><input type="url" id="banner-link" required></div>
-                        <button type="submit" id="banner-submit-btn">Add Banner</button>
+                        <div class="form-group">
+                            <label>Banner Title</label>
+                            <input type="text" id="banner-title" placeholder="e.g. Special Offer Banner" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Banner Image URL</label>
+                            <input type="url" id="banner-image" placeholder="https://i.ibb.co/slider.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Action Link URL</label>
+                            <input type="url" id="banner-link" placeholder="https://example.com" required>
+                        </div>
+                        <button type="submit" id="banner-submit-btn"><i class="fas fa-plus"></i> Add Banner</button>
                         <button type="button" id="cancel-banner-edit-btn" class="btn-secondary" style="display:none;" onclick="resetBannerForm()">Cancel Edit</button>
                     </form>
                     <div class="list-container standalone" id="banner-list"></div>
                 </div>
             </div>
 
-            <!-- Apps -->
+            <!-- 3. Manage Apps (Upload / Edit / Bulk Delete) -->
             <div id="apps" class="section-box">
-                <div class="top-header"><h1 id="app-form-title">Upload / Edit App</h1></div>
+                <div class="top-header">
+                    <h1 id="app-form-title"><i class="fas fa-cloud-arrow-up" style="color: var(--accent-color);"></i> Upload / Edit App</h1>
+                </div>
                 <div class="split-layout">
                     <form id="app-form">
                         <input type="hidden" id="editing-app-key" value="">
-                        <div class="form-group"><label>Title</label><input type="text" id="app-title" required></div>
-                        <div class="form-group"><label>Category</label><select id="app-category"><option value="General">General</option></select></div>
-                        <div class="form-group"><label>Image URL</label><input type="url" id="app-image" required></div>
-                        <div class="form-group"><label>Download URL</label><input type="url" id="app-download" required></div>
-                        <div class="form-group"><label>Version</label><input type="text" id="app-version" required></div>
-                        <div class="form-group"><label>Downloads Count</label><input type="number" id="app-downloads-count" value="0" min="0" required></div>
-                        <button type="submit" id="app-submit-btn">Upload App</button>
+                        <div class="form-group">
+                            <label>Title (অ্যাপের নাম)</label>
+                            <input type="text" id="app-title" placeholder="e.g. JRS VPN Pro" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="app-category"><option value="General">General</option></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="url" id="app-image" placeholder="https://i.ibb.co/icon.png" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Download URL</label>
+                            <input type="url" id="app-download" placeholder="https://github.com/user/repo/app.apk" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Version</label>
+                            <input type="text" id="app-version" placeholder="v1.0.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-chart-line"></i> Manual Downloads Count (ডাউনলোড সংখ্যা)</label>
+                            <input type="number" id="app-downloads-count" placeholder="e.g. 1500" value="0" min="0" required>
+                        </div>
+                        <button type="submit" id="app-submit-btn"><i class="fas fa-plus"></i> Upload App</button>
                         <button type="button" id="cancel-edit-btn" class="btn-secondary" style="display:none;" onclick="resetAppForm()">Cancel Edit</button>
                     </form>
+
+                    <!-- Apps List View with Bulk Delete -->
                     <div>
                         <div class="list-toolbar">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
-                                <input type="checkbox" id="select-all-apps" class="item-checkbox" onclick="toggleSelectAllApps(this)"> Select All
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 12px; color: var(--text-main); font-weight: 600;">
+                                <input type="checkbox" id="select-all-apps" class="item-checkbox" onclick="toggleSelectAllApps(this)">
+                                Select All Apps
                             </label>
                             <button id="bulk-delete-btn" class="bulk-del-btn" onclick="deleteSelectedApps()">
-                                <i class="fas fa-trash"></i> Delete (<span id="selected-count">0</span>)
+                                <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
                             </button>
                         </div>
                         <div class="list-container" id="app-list"></div>
@@ -440,106 +512,124 @@
                 </div>
             </div>
 
-            <!-- Categories -->
+            <!-- 4. Manage Categories -->
             <div id="categories" class="section-box">
-                <div class="top-header"><h1>Categories</h1></div>
+                <div class="top-header"><h1><i class="fas fa-folder-tree" style="color: #FF512F;"></i> Categories</h1></div>
                 <div class="split-layout">
                     <form id="cat-form">
-                        <div class="form-group"><label>Category Name</label><input type="text" id="cat-name" required></div>
-                        <button type="submit">Add Category</button>
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input type="text" id="cat-name" placeholder="e.g. Tools, VPN, Scripts" required>
+                        </div>
+                        <button type="submit"><i class="fas fa-plus"></i> Add Category</button>
                     </form>
                     <div class="list-container standalone" id="cat-list"></div>
                 </div>
             </div>
 
-            <!-- Tools -->
+            <!-- 5. Manage Tools -->
             <div id="tools" class="section-box">
-                <div class="top-header"><h1 id="tool-form-title">Tools & Modules</h1></div>
+                <div class="top-header">
+                    <h1 id="tool-form-title"><i class="fas fa-screwdriver-wrench" style="color: #38ef7d;"></i> Tools & Modules</h1>
+                </div>
                 <div class="split-layout">
                     <form id="tool-form">
                         <input type="hidden" id="editing-tool-key" value="">
-                        <div class="form-group"><label>Title</label><input type="text" id="tool-title" required></div>
-                        <div class="form-group"><label>Description</label><textarea id="tool-desc" rows="4" required></textarea></div>
-                        <div class="form-group"><label>Image URL</label><input type="url" id="tool-image" required></div>
-                        <div class="form-group"><label>Download URL</label><input type="url" id="tool-download" required></div>
-                        <button type="submit" id="tool-submit-btn">Add Tool</button>
+                        <div class="form-group"><label>Title</label><input type="text" id="tool-title" placeholder="Tool Name" required></div>
+                        <div class="form-group"><label>Description</label><textarea id="tool-desc" rows="4" placeholder="Short description..." required></textarea></div>
+                        <div class="form-group"><label>Image URL</label><input type="url" id="tool-image" required placeholder="https://i.ibb.co/tool.png"></div>
+                        <div class="form-group"><label>Download URL</label><input type="url" id="tool-download" required placeholder="https://example.com/tool.zip"></div>
+                        <button type="submit" id="tool-submit-btn"><i class="fas fa-plus"></i> Add Tool</button>
                         <button type="button" id="cancel-tool-edit-btn" class="btn-secondary" style="display:none;" onclick="resetToolForm()">Cancel Edit</button>
                     </form>
                     <div class="list-container standalone" id="tool-list"></div>
                 </div>
             </div>
 
-            <!-- Articles -->
+            <!-- 6. Manage Blog Articles -->
             <div id="articles" class="section-box">
-                <div class="top-header"><h1 id="art-form-title">Blog Articles</h1></div>
+                <div class="top-header">
+                    <h1 id="art-form-title"><i class="fas fa-newspaper" style="color: #00f2fe;"></i> Blog Articles</h1>
+                </div>
                 <div class="split-layout">
                     <form id="article-form">
                         <input type="hidden" id="editing-art-key" value="">
-                        <div class="form-group"><label>Title</label><input type="text" id="art-title" required></div>
-                        <div class="form-group"><label>Content</label><textarea id="art-desc" rows="6" required></textarea></div>
-                        <div class="form-group"><label>Reference Link</label><input type="url" id="art-link"></div>
-                        <button type="submit" id="art-submit-btn">Publish Article</button>
+                        <div class="form-group"><label>Article Title</label><input type="text" id="art-title" required placeholder="Article headline"></div>
+                        <div class="form-group"><label>Content / Description</label><textarea id="art-desc" rows="6" required placeholder="Full article content..."></textarea></div>
+                        <div class="form-group"><label>Reference Link (Optional)</label><input type="url" id="art-link" placeholder="https://"></div>
+                        <button type="submit" id="art-submit-btn"><i class="fas fa-paper-plane"></i> Publish Article</button>
                         <button type="button" id="cancel-art-edit-btn" class="btn-secondary" style="display:none;" onclick="resetArticleForm()">Cancel Edit</button>
                     </form>
                     <div class="list-container standalone" id="article-list"></div>
                 </div>
             </div>
 
-            <!-- Notices -->
+            <!-- 7. Notice Ticker -->
             <div id="notices" class="section-box">
-                <div class="top-header"><h1 id="notice-form-title">Notice Ticker</h1></div>
+                <div class="top-header">
+                    <h1 id="notice-form-title"><i class="fas fa-bullhorn" style="color: #eb3349;"></i> Notice Ticker</h1>
+                </div>
                 <div class="split-layout">
                     <form id="notice-form">
                         <input type="hidden" id="editing-notice-key" value="">
-                        <div class="form-group"><label>Notice Title</label><input type="text" id="notice-title" required></div>
-                        <div class="form-group"><label>Message</label><textarea id="notice-body" rows="4" required></textarea></div>
-                        <button type="submit" id="notice-submit-btn">Publish Notice</button>
+                        <div class="form-group"><label>Notice Title</label><input type="text" id="notice-title" required placeholder="Notice Heading"></div>
+                        <div class="form-group"><label>Notice Message (Body)</label><textarea id="notice-body" rows="4" required placeholder="Notice full text message..."></textarea></div>
+                        <button type="submit" id="notice-submit-btn"><i class="fas fa-bullhorn"></i> Publish Notice</button>
                         <button type="button" id="cancel-notice-edit-btn" class="btn-secondary" style="display:none;" onclick="resetNoticeForm()">Cancel Edit</button>
                     </form>
                     <div class="list-container standalone" id="notice-list"></div>
                 </div>
             </div>
 
-            <!-- Messages -->
+            <!-- NEW: User Messages & Feedback -->
             <div id="messages" class="section-box">
-                <div class="top-header"><h1>User Messages</h1></div>
+                <div class="top-header">
+                    <h1><i class="fas fa-comments" style="color: var(--warning-color);"></i> User Messages & Support Requests</h1>
+                </div>
                 <div class="list-container standalone" id="message-list"></div>
             </div>
 
-            <!-- Settings -->
+            <!-- NEW: Site Meta Settings & Maintenance -->
             <div id="settings" class="section-box">
-                <div class="top-header"><h1>Site Settings</h1></div>
+                <div class="top-header">
+                    <h1><i class="fas fa-sliders" style="color: var(--accent-color);"></i> System Settings</h1>
+                </div>
                 <form id="site-settings-form">
                     <div class="switch-container">
                         <div>
-                            <h4 style="font-size:14px; font-weight:600;">Maintenance Mode</h4>
-                            <p style="color:var(--text-muted); font-size:12px; margin-top:2px;">Show maintenance page to visitors</p>
+                            <h4 style="color:#fff; font-size:14px;">Maintenance Mode (ওয়েবসাইট সংস্কার মোড)</h4>
+                            <p style="color:var(--text-muted); font-size:11px; margin-top:3px;">অন করলে ভিজিটররা মেইনটেন্যান্স পেজ দেখতে পাবে</p>
                         </div>
                         <label class="switch">
                             <input type="checkbox" id="site-maintenance-mode">
                             <span class="slider"></span>
                         </label>
                     </div>
+
                     <div class="form-group">
-                        <label>Site Title</label>
-                        <input type="text" id="site-title-input" placeholder="JRS Store">
+                        <label><i class="fas fa-heading"></i> Site Title / Heading</label>
+                        <input type="text" id="site-title-input" placeholder="JRS Store - Ultimate App Hub">
                     </div>
+
                     <div class="form-group">
-                        <label>Maintenance Message</label>
-                        <textarea id="site-maintenance-msg" rows="3"></textarea>
+                        <label><i class="fas fa-triangle-exclamation"></i> Maintenance Notice Text</label>
+                        <textarea id="site-maintenance-msg" rows="3" placeholder="Server maintenance is in progress. Please check back later."></textarea>
                     </div>
-                    <button type="submit" class="btn-primary">Save Settings</button>
+
+                    <button type="submit" class="btn-primary"><i class="fas fa-floppy-disk"></i> Save System Settings</button>
                 </form>
             </div>
+
         </main>
     </div>
 
-    <!-- Firebase SDK (Unchanged) -->
+    <!-- Firebase 10 SDK Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getDatabase, ref, push, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCTV_PGdsnI2Tcbou3IJUU_r8ylwev9fU0",
             authDomain: "jrs-store.firebaseapp.com",
@@ -554,37 +644,48 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let loadedAppsData = {}, loadedToolsData = {}, loadedArticlesData = {}, loadedNoticesData = {}, loadedBannersData = {};
+        // Data Caches
+        let loadedAppsData = {};
+        let loadedToolsData = {};
+        let loadedArticlesData = {};
+        let loadedNoticesData = {};
+        let loadedBannersData = {};
 
+        // Toast Notification Display
         window.showToast = function(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 3200);
         }
 
+        // Toggle Mobile Sidebar Drawer
         window.toggleSidebar = function() {
             document.querySelector('.sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
         }
 
+        // Switch Active Section
         window.switchSection = function(id, el) {
             document.querySelectorAll('.section-box').forEach(s => s.classList.remove('active-section'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active-section');
             if(el) el.classList.add('active');
+
             if(window.innerWidth <= 768) {
                 document.querySelector('.sidebar').classList.remove('open');
                 document.getElementById('overlay').classList.remove('active');
             }
         }
 
+        // Single Item Delete Function
         window.deleteData = function(path, key) {
-            if(confirm('Delete this item?')) {
+            if(confirm('Are you sure you want to delete this item?')) {
                 remove(ref(db, `${path}/${key}`)).then(() => showToast('Deleted successfully!'));
             }
         }
 
+        // --- Multi-Select & Bulk Delete Operations ---
         window.updateBulkDeleteUI = function() {
             const checkedBoxes = document.querySelectorAll('.item-checkbox[data-key]:checked');
             const bulkBtn = document.getElementById('bulk-delete-btn');
@@ -593,31 +694,56 @@
             const totalBoxes = document.querySelectorAll('.item-checkbox[data-key]');
 
             if (countSpan) countSpan.innerText = checkedBoxes.length;
-            if (bulkBtn) bulkBtn.style.display = checkedBoxes.length > 0 ? 'inline-flex' : 'none';
-            if (selectAllCb && totalBoxes.length > 0) selectAllCb.checked = (checkedBoxes.length === totalBoxes.length);
+            
+            if (checkedBoxes.length > 0) {
+                if (bulkBtn) bulkBtn.style.display = 'inline-flex';
+            } else {
+                if (bulkBtn) bulkBtn.style.display = 'none';
+            }
+
+            if (selectAllCb && totalBoxes.length > 0) {
+                selectAllCb.checked = (checkedBoxes.length === totalBoxes.length);
+            }
         }
 
         window.toggleSelectAllApps = function(masterCb) {
-            document.querySelectorAll('.item-checkbox[data-key]').forEach(cb => cb.checked = masterCb.checked);
+            const checkboxes = document.querySelectorAll('.item-checkbox[data-key]');
+            checkboxes.forEach(cb => cb.checked = masterCb.checked);
             updateBulkDeleteUI();
         }
 
         window.deleteSelectedApps = function() {
             const checkedBoxes = document.querySelectorAll('.item-checkbox[data-key]:checked');
             if (checkedBoxes.length === 0) return;
-            if (confirm(`Delete ${checkedBoxes.length} app(s)?`)) {
-                const deletePromises = Array.from(checkedBoxes).map(cb => remove(ref(db, `latest_updates/${cb.getAttribute('data-key')}`)));
-                Promise.all(deletePromises).then(() => {
-                    showToast('Apps deleted!');
-                    document.getElementById('select-all-apps').checked = false;
-                    updateBulkDeleteUI();
+
+            if (confirm(`Are you sure you want to delete ${checkedBoxes.length} selected app(s)?`)) {
+                const deletePromises = [];
+                checkedBoxes.forEach(cb => {
+                    const key = cb.getAttribute('data-key');
+                    if (key) {
+                        deletePromises.push(remove(ref(db, `latest_updates/${key}`)));
+                    }
                 });
+
+                Promise.all(deletePromises)
+                    .then(() => {
+                        showToast(`${checkedBoxes.length} App(s) deleted successfully!`);
+                        const selectAllCb = document.getElementById('select-all-apps');
+                        if (selectAllCb) selectAllCb.checked = false;
+                        updateBulkDeleteUI();
+                    })
+                    .catch(err => {
+                        showToast('Error deleting apps!');
+                        console.error(err);
+                    });
             }
         }
 
+        // --- App Edit Functions ---
         window.editApp = function(key) {
             const item = loadedAppsData[key];
             if (!item) return;
+
             document.getElementById('editing-app-key').value = key;
             document.getElementById('app-title').value = item.title || '';
             document.getElementById('app-category').value = item.category || 'General';
@@ -625,89 +751,108 @@
             document.getElementById('app-download').value = item.download_url || '';
             document.getElementById('app-version').value = item.version || 'v1.0';
             document.getElementById('app-downloads-count').value = item.downloads !== undefined ? item.downloads : 0;
-            document.getElementById('app-submit-btn').innerText = 'Save Changes';
+
+            document.getElementById('app-submit-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save Changes';
             document.getElementById('cancel-edit-btn').style.display = 'block';
-            document.getElementById('apps').scrollIntoView();
+            document.getElementById('apps').scrollIntoView({ behavior: 'smooth' });
         }
+
         window.resetAppForm = function() {
             document.getElementById('editing-app-key').value = '';
             document.getElementById('app-form').reset();
             document.getElementById('app-downloads-count').value = 0;
-            document.getElementById('app-submit-btn').innerText = 'Upload App';
+            document.getElementById('app-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Upload App';
             document.getElementById('cancel-edit-btn').style.display = 'none';
         }
 
+        // --- Tools Edit Functions ---
         window.editTool = function(key) {
             const item = loadedToolsData[key];
             if (!item) return;
+
             document.getElementById('editing-tool-key').value = key;
             document.getElementById('tool-title').value = item.title || '';
             document.getElementById('tool-desc').value = item.description || '';
             document.getElementById('tool-image').value = item.image_url || '';
             document.getElementById('tool-download').value = item.download_url || '';
-            document.getElementById('tool-submit-btn').innerText = 'Save Tool';
+
+            document.getElementById('tool-submit-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save Tool Changes';
             document.getElementById('cancel-tool-edit-btn').style.display = 'block';
-            document.getElementById('tools').scrollIntoView();
+            document.getElementById('tools').scrollIntoView({ behavior: 'smooth' });
         }
+
         window.resetToolForm = function() {
             document.getElementById('editing-tool-key').value = '';
             document.getElementById('tool-form').reset();
-            document.getElementById('tool-submit-btn').innerText = 'Add Tool';
+            document.getElementById('tool-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Tool';
             document.getElementById('cancel-tool-edit-btn').style.display = 'none';
         }
 
+        // --- Article Edit Functions ---
         window.editArticle = function(key) {
             const item = loadedArticlesData[key];
             if (!item) return;
+
             document.getElementById('editing-art-key').value = key;
             document.getElementById('art-title').value = item.title || '';
             document.getElementById('art-desc').value = item.description || '';
             document.getElementById('art-link').value = item.link || '';
-            document.getElementById('art-submit-btn').innerText = 'Save Article';
+
+            document.getElementById('art-submit-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save Article Changes';
             document.getElementById('cancel-art-edit-btn').style.display = 'block';
-            document.getElementById('articles').scrollIntoView();
+            document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
         }
+
         window.resetArticleForm = function() {
             document.getElementById('editing-art-key').value = '';
             document.getElementById('article-form').reset();
-            document.getElementById('art-submit-btn').innerText = 'Publish Article';
+            document.getElementById('art-submit-btn').innerHTML = '<i class="fas fa-paper-plane"></i> Publish Article';
             document.getElementById('cancel-art-edit-btn').style.display = 'none';
         }
 
+        // --- Notice Edit Functions ---
         window.editNotice = function(key) {
             const item = loadedNoticesData[key];
             if (!item) return;
+
             document.getElementById('editing-notice-key').value = key;
             document.getElementById('notice-title').value = item.title || '';
             document.getElementById('notice-body').value = item.body || '';
-            document.getElementById('notice-submit-btn').innerText = 'Save Notice';
+
+            document.getElementById('notice-submit-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save Notice Changes';
             document.getElementById('cancel-notice-edit-btn').style.display = 'block';
-            document.getElementById('notices').scrollIntoView();
+            document.getElementById('notices').scrollIntoView({ behavior: 'smooth' });
         }
+
         window.resetNoticeForm = function() {
             document.getElementById('editing-notice-key').value = '';
             document.getElementById('notice-form').reset();
-            document.getElementById('notice-submit-btn').innerText = 'Publish Notice';
+            document.getElementById('notice-submit-btn').innerHTML = '<i class="fas fa-bullhorn"></i> Publish Notice';
             document.getElementById('cancel-notice-edit-btn').style.display = 'none';
         }
 
+        // --- Banner Edit Functions ---
         window.editBanner = function(key) {
             const item = loadedBannersData[key];
             if (!item) return;
+
             document.getElementById('editing-banner-key').value = key;
             document.getElementById('banner-title').value = item.title || '';
             document.getElementById('banner-image').value = item.image_url || '';
             document.getElementById('banner-link').value = item.target_url || '';
-            document.getElementById('banner-submit-btn').innerText = 'Save Banner';
+
+            document.getElementById('banner-submit-btn').innerHTML = '<i class="fas fa-floppy-disk"></i> Save Banner Changes';
             document.getElementById('cancel-banner-edit-btn').style.display = 'block';
         }
+
         window.resetBannerForm = function() {
             document.getElementById('editing-banner-key').value = '';
             document.getElementById('banner-form').reset();
-            document.getElementById('banner-submit-btn').innerText = 'Add Banner';
+            document.getElementById('banner-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Add Banner';
             document.getElementById('cancel-banner-edit-btn').style.display = 'none';
         }
 
+        // Authentication Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('login-screen').style.display = 'none';
@@ -719,18 +864,22 @@
             }
         });
 
+        // Admin Login
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            signInWithEmailAndPassword(auth, document.getElementById('admin-email').value, document.getElementById('admin-pass').value)
-            .catch(() => {
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-pass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(() => {
                 const err = document.getElementById('error-box');
                 err.innerText = "ভুল ইমেইল বা পাসওয়ার্ড!";
                 err.style.display = 'block';
             });
         });
 
+        // Admin Logout
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
+        // --- Load Realtime Firebase Data ---
         function loadAllData() {
             onValue(ref(db, 'ad_settings'), snap => {
                 const ads = snap.val() || {};
@@ -741,8 +890,13 @@
                 document.getElementById('ad-custom-script').value = ads.custom_script || '';
                 
                 const statAds = document.getElementById('stat-ads-status');
-                statAds.innerText = ads.master_status ? "ON" : "OFF";
-                statAds.style.color = ads.master_status ? "var(--success)" : "var(--danger)";
+                if (ads.master_status === true) {
+                    statAds.innerText = "ON";
+                    statAds.style.color = "#38ef7d";
+                } else {
+                    statAds.innerText = "OFF";
+                    statAds.style.color = "#ff4d4d";
+                }
             });
 
             onValue(ref(db, 'categories'), snap => {
@@ -781,12 +935,12 @@
                                     <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/46'">
                                     <div class="item-text">
                                         <h4>${item.title}</h4>
-                                        <p>${item.category} • ${item.version} • ${item.downloads || 0} dl</p>
+                                        <p>${item.category} • ${item.version} • <i class="fas fa-download"></i> ${item.downloads || 0}</p>
                                     </div>
                                 </div>
                                 <div class="action-btns">
-                                    <button class="edit-btn" onclick="editApp('${key}')"><i class="fas fa-pen"></i></button>
-                                    <button class="del-btn" onclick="deleteData('latest_updates', '${key}')"><i class="fas fa-trash"></i></button>
+                                    <button class="edit-btn" title="Edit App" onclick="editApp('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete App" onclick="deleteData('latest_updates', '${key}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>`;
                     });
@@ -808,11 +962,14 @@
                             <div class="list-item">
                                 <div class="item-info">
                                     <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/46'">
-                                    <div class="item-text"><h4>${item.title}</h4><p>${item.description || ''}</p></div>
+                                    <div class="item-text">
+                                        <h4>${item.title}</h4>
+                                        <p>${item.description || 'No description'}</p>
+                                    </div>
                                 </div>
                                 <div class="action-btns">
-                                    <button class="edit-btn" onclick="editTool('${key}')"><i class="fas fa-pen"></i></button>
-                                    <button class="del-btn" onclick="deleteData('tools_modules', '${key}')"><i class="fas fa-trash"></i></button>
+                                    <button class="edit-btn" title="Edit Tool" onclick="editTool('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete Tool" onclick="deleteData('tools_modules', '${key}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>`;
                     });
@@ -829,10 +986,13 @@
                         let item = data[key];
                         document.getElementById('article-list').innerHTML += `
                             <div class="list-item">
-                                <div class="item-text"><h4>${item.title}</h4></div>
+                                <div class="item-text">
+                                    <h4>${item.title}</h4>
+                                    <p>${item.description || ''}</p>
+                                </div>
                                 <div class="action-btns">
-                                    <button class="edit-btn" onclick="editArticle('${key}')"><i class="fas fa-pen"></i></button>
-                                    <button class="del-btn" onclick="deleteData('site_updates', '${key}')"><i class="fas fa-trash"></i></button>
+                                    <button class="edit-btn" title="Edit Article" onclick="editArticle('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete Article" onclick="deleteData('site_updates', '${key}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>`;
                     });
@@ -850,10 +1010,13 @@
                         let item = data[key];
                         document.getElementById('notice-list').innerHTML += `
                             <div class="list-item">
-                                <div class="item-text"><h4>${item.title}</h4></div>
+                                <div class="item-text">
+                                    <h4>${item.title}</h4>
+                                    <p>${item.body}</p>
+                                </div>
                                 <div class="action-btns">
-                                    <button class="edit-btn" onclick="editNotice('${key}')"><i class="fas fa-pen"></i></button>
-                                    <button class="del-btn" onclick="deleteData('notices', '${key}')"><i class="fas fa-trash"></i></button>
+                                    <button class="edit-btn" title="Edit Notice" onclick="editNotice('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete Notice" onclick="deleteData('notices', '${key}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>`;
                     });
@@ -872,11 +1035,14 @@
                             <div class="list-item">
                                 <div class="item-info">
                                     <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/46'">
-                                    <div class="item-text"><h4>${item.title}</h4></div>
+                                    <div class="item-text">
+                                        <h4>${item.title}</h4>
+                                        <p><i class="fas fa-link"></i> ${item.target_url}</p>
+                                    </div>
                                 </div>
                                 <div class="action-btns">
-                                    <button class="edit-btn" onclick="editBanner('${key}')"><i class="fas fa-pen"></i></button>
-                                    <button class="del-btn" onclick="deleteData('banners', '${key}')"><i class="fas fa-trash"></i></button>
+                                    <button class="edit-btn" title="Edit Banner" onclick="editBanner('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete Banner" onclick="deleteData('banners', '${key}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>`;
                     });
@@ -892,12 +1058,14 @@
                         document.getElementById('message-list').innerHTML += `
                             <div class="list-item">
                                 <div class="item-text">
-                                    <h4 style="color:var(--primary);">${item.name || 'Anonymous'}</h4>
-                                    <p>${item.message || item.text || ''}</p>
+                                    <h4 style="color:var(--accent-color);">${item.name || 'Anonymous User'} <span style="font-size:11px; color:var(--text-muted);">(${item.email || 'No email'})</span></h4>
+                                    <p style="margin-top:6px; color:#fff;">${item.message || item.text || ''}</p>
                                 </div>
                                 <button class="del-btn" onclick="deleteData('user_messages', '${key}')"><i class="fas fa-trash"></i></button>
                             </div>`;
                     });
+                } else {
+                    document.getElementById('message-list').innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:20px;">No messages received yet.</p>`;
                 }
             });
 
@@ -909,15 +1077,19 @@
             });
         }
 
+        // --- Form Submissions ---
         document.getElementById('ad-settings-form').addEventListener('submit', e => {
             e.preventDefault();
-            set(ref(db, 'ad_settings'), {
+            const adData = {
                 master_status: document.getElementById('ad-master-status').checked,
                 adsterra_link: document.getElementById('ad-adsterra-link').value,
                 banner_img: document.getElementById('ad-banner-img').value,
                 banner_target: document.getElementById('ad-banner-target').value,
                 custom_script: document.getElementById('ad-custom-script').value
-            }).then(() => showToast('Ad Settings Updated!'));
+            };
+            set(ref(db, 'ad_settings'), adData)
+                .then(() => showToast('Ad Settings Updated!'))
+                .catch(() => showToast('Failed to update Ad Settings!'));
         });
 
         document.getElementById('app-form').addEventListener('submit', e => {
@@ -932,16 +1104,20 @@
                 downloads: parseInt(document.getElementById('app-downloads-count').value) || 0,
                 rating: 4.8
             };
+
             if (editKey) {
-                update(ref(db, `latest_updates/${editKey}`), appData).then(() => { showToast('App Updated!'); resetAppForm(); });
+                update(ref(db, `latest_updates/${editKey}`), appData)
+                .then(() => { showToast('App Updated Successfully!'); resetAppForm(); });
             } else {
-                push(ref(db, 'latest_updates'), appData).then(() => { showToast('App Uploaded!'); resetAppForm(); });
+                push(ref(db, 'latest_updates'), appData)
+                .then(() => { showToast('App Uploaded Successfully!'); resetAppForm(); });
             }
         });
 
         document.getElementById('cat-form').addEventListener('submit', e => {
             e.preventDefault();
-            push(ref(db, 'categories'), { name: document.getElementById('cat-name').value }).then(() => { showToast('Category Added!'); e.target.reset(); });
+            push(ref(db, 'categories'), { name: document.getElementById('cat-name').value })
+            .then(() => { showToast('Category Added!'); e.target.reset(); });
         });
 
         document.getElementById('tool-form').addEventListener('submit', e => {
@@ -953,8 +1129,14 @@
                 image_url: document.getElementById('tool-image').value,
                 download_url: document.getElementById('tool-download').value
             };
-            if (editKey) update(ref(db, `tools_modules/${editKey}`), toolData).then(() => { showToast('Tool Updated!'); resetToolForm(); });
-            else push(ref(db, 'tools_modules'), toolData).then(() => { showToast('Tool Added!'); resetToolForm(); });
+
+            if (editKey) {
+                update(ref(db, `tools_modules/${editKey}`), toolData)
+                .then(() => { showToast('Tool Updated!'); resetToolForm(); });
+            } else {
+                push(ref(db, 'tools_modules'), toolData)
+                .then(() => { showToast('Tool Added!'); resetToolForm(); });
+            }
         });
 
         document.getElementById('article-form').addEventListener('submit', e => {
@@ -965,16 +1147,31 @@
                 description: document.getElementById('art-desc').value,
                 link: document.getElementById('art-link').value
             };
-            if (editKey) update(ref(db, `site_updates/${editKey}`), artData).then(() => { showToast('Article Updated!'); resetArticleForm(); });
-            else push(ref(db, 'site_updates'), artData).then(() => { showToast('Article Published!'); resetArticleForm(); });
+
+            if (editKey) {
+                update(ref(db, `site_updates/${editKey}`), artData)
+                .then(() => { showToast('Article Updated!'); resetArticleForm(); });
+            } else {
+                push(ref(db, 'site_updates'), artData)
+                .then(() => { showToast('Article Published!'); resetArticleForm(); });
+            }
         });
 
         document.getElementById('notice-form').addEventListener('submit', e => {
             e.preventDefault();
             const editKey = document.getElementById('editing-notice-key').value;
-            const noticeData = { title: document.getElementById('notice-title').value, body: document.getElementById('notice-body').value };
-            if (editKey) update(ref(db, `notices/${editKey}`), noticeData).then(() => { showToast('Notice Updated!'); resetNoticeForm(); });
-            else push(ref(db, 'notices'), noticeData).then(() => { showToast('Notice Published!'); resetNoticeForm(); });
+            const noticeData = {
+                title: document.getElementById('notice-title').value,
+                body: document.getElementById('notice-body').value
+            };
+
+            if (editKey) {
+                update(ref(db, `notices/${editKey}`), noticeData)
+                .then(() => { showToast('Notice Updated!'); resetNoticeForm(); });
+            } else {
+                push(ref(db, 'notices'), noticeData)
+                .then(() => { showToast('Notice Published!'); resetNoticeForm(); });
+            }
         });
 
         document.getElementById('banner-form').addEventListener('submit', e => {
@@ -985,19 +1182,28 @@
                 image_url: document.getElementById('banner-image').value,
                 target_url: document.getElementById('banner-link').value
             };
-            if (editKey) update(ref(db, `banners/${editKey}`), bannerData).then(() => { showToast('Banner Updated!'); resetBannerForm(); });
-            else push(ref(db, 'banners'), bannerData).then(() => { showToast('Banner Added!'); resetBannerForm(); });
+
+            if (editKey) {
+                update(ref(db, `banners/${editKey}`), bannerData)
+                .then(() => { showToast('Banner Updated!'); resetBannerForm(); });
+            } else {
+                push(ref(db, 'banners'), bannerData)
+                .then(() => { showToast('Banner Added!'); resetBannerForm(); });
+            }
         });
 
         document.getElementById('site-settings-form').addEventListener('submit', e => {
             e.preventDefault();
-            set(ref(db, 'site_settings'), {
+            const settingsData = {
                 maintenance: document.getElementById('site-maintenance-mode').checked,
                 title: document.getElementById('site-title-input').value,
                 maintenance_msg: document.getElementById('site-maintenance-msg').value
-            }).then(() => showToast('Settings Saved!'));
-        });
+            };
 
+            set(ref(db, 'site_settings'), settingsData)
+                .then(() => showToast('System Settings Saved!'))
+                .catch(() => showToast('Failed to save settings!'));
+        });
     </script>
 </body>
 </html>
