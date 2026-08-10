@@ -466,6 +466,10 @@
                             <input type="text" id="app-title" placeholder="App Name" required>
                         </div>
                         <div class="form-group">
+                            <label>Description (অ্যাপের বিস্তারিত)</label>
+                            <textarea id="app-description" rows="3" placeholder="Write app details here..." required></textarea>
+                        </div>
+                        <div class="form-group">
                             <label>Category</label>
                             <select id="app-category"><option value="General">General</option></select>
                         </div>
@@ -711,6 +715,7 @@
             if (!item) return;
             document.getElementById('editing-app-key').value = key;
             document.getElementById('app-title').value = item.title || '';
+            document.getElementById('app-description').value = item.description || '';
             document.getElementById('app-category').value = item.category || 'General';
             document.getElementById('app-image').value = item.image_url || '';
             document.getElementById('app-download').value = item.download_url || '';
@@ -1032,6 +1037,7 @@
             const editKey = document.getElementById('editing-app-key').value;
             const appData = {
                 title: document.getElementById('app-title').value,
+                description: document.getElementById('app-description').value,
                 category: document.getElementById('app-category').value,
                 image_url: document.getElementById('app-image').value,
                 download_url: document.getElementById('app-download').value,
