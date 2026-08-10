@@ -79,22 +79,33 @@
         @media (max-width: 900px) { .split-layout { grid-template-columns: 1fr; } }
         
         .list-container { background: #0b0b14; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); height: 450px; overflow-y: auto; }
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 10px; }
         .list-item:last-child { border-bottom: none; }
-        .item-info { display: flex; align-items: center; gap: 12px; }
-        .item-img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: var(--card-bg); }
-        .item-text h4 { font-size: 14px; color: #fff; }
+        .item-info { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .item-img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: var(--card-bg); flex-shrink: 0; }
+        .item-text { overflow: hidden; }
+        .item-text h4 { font-size: 14px; color: #fff; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
         .item-text p { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
         
-        .del-btn { background: rgba(255, 77, 77, 0.1); color: var(--danger-color); border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        /* Action Buttons */
+        .action-btns { display: flex; align-items: center; gap: 6px; }
+        .edit-btn { background: rgba(0, 242, 254, 0.1); color: var(--accent-color); border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; justify-content: center; align-items: center; }
+        .edit-btn:hover { background: var(--accent-color); color: #0b0b14; }
+        .del-btn { background: rgba(255, 77, 77, 0.1); color: var(--danger-color); border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; justify-content: center; align-items: center; }
         .del-btn:hover { background: var(--danger-color); color: #fff; }
+
+        /* Checkbox & Bulk Actions */
+        .item-checkbox { width: 18px !important; height: 18px !important; cursor: pointer; accent-color: var(--accent-color); flex-shrink: 0; }
+        .list-toolbar { display: flex; justify-content: space-between; align-items: center; background: #0b0b14; padding: 10px 15px; border-radius: 12px 12px 0 0; border: 1px solid var(--border-color); border-bottom: none; }
+        .bulk-del-btn { background: var(--danger-color); color: #fff; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; display: none; align-items: center; gap: 6px; }
+        .bulk-del-btn:hover { background: #e03e3e; box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3); }
 
         /* Toast Notification */
         #toast { position: fixed; bottom: 30px; right: 30px; background: var(--accent-gradient); color: #0b0b14; padding: 15px 25px; border-radius: 8px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.3); transform: translateY(100px); opacity: 0; transition: 0.4s; z-index: 9999; display: flex; align-items: center; gap: 10px; }
         #toast.show { transform: translateY(0); opacity: 1; }
         .error-msg { color: var(--danger-color); font-size: 13px; margin-top: 10px; display: none; }
 
-        /* --- NEW: Mobile Responsive Layout --- */
+        /* Mobile Responsive Layout */
         .mobile-header {
             display: none;
             align-items: center;
@@ -221,9 +232,10 @@
 
             <!-- Manage Apps -->
             <div id="apps" class="section-box">
-                <div class="top-header"><h1><i class="fas fa-cloud-arrow-up"></i> Upload New App</h1></div>
+                <div class="top-header"><h1 id="app-form-title"><i class="fas fa-cloud-arrow-up"></i> Upload / Edit App</h1></div>
                 <div class="split-layout">
                     <form id="app-form">
+                        <input type="hidden" id="editing-app-key" value="">
                         <div class="form-group">
                             <label>Title (অ্যাপের নাম)</label>
                             <input type="text" id="app-title" required>
@@ -244,9 +256,28 @@
                             <label>Version</label>
                             <input type="text" id="app-version" placeholder="v1.0" required>
                         </div>
-                        <button type="submit">Upload App</button>
+                        <!-- Manual Download Count Adjuster -->
+                        <div class="form-group">
+                            <label>Manual Downloads Count (ডাউনলোড সংখ্যা)</label>
+                            <input type="number" id="app-downloads-count" placeholder="e.g. 1500" value="0" min="0" required>
+                        </div>
+                        <button type="submit" id="app-submit-btn"><i class="fas fa-plus"></i> Upload App</button>
+                        <button type="button" id="cancel-edit-btn" style="display:none; background: var(--border-color); color: #fff; margin-top: 8px; width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;" onclick="resetAppForm()">Cancel Edit</button>
                     </form>
-                    <div class="list-container" id="app-list"></div>
+
+                    <!-- Apps List View with Bulk Action Bar -->
+                    <div>
+                        <div class="list-toolbar">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text-main);">
+                                <input type="checkbox" id="select-all-apps" class="item-checkbox" onclick="toggleSelectAllApps(this)">
+                                Select All
+                            </label>
+                            <button id="bulk-delete-btn" class="bulk-del-btn" onclick="deleteSelectedApps()">
+                                <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
+                            </button>
+                        </div>
+                        <div class="list-container" id="app-list" style="border-top-left-radius: 0; border-top-right-radius: 0;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -313,9 +344,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // Your Exact Firebase Config
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCTV_PGdsnI2Tcbou3IJUU_r8ylwev9fU0",
             authDomain: "jrs-store.firebaseapp.com",
@@ -329,6 +360,9 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+
+        // Cache for apps data
+        let loadedAppsData = {};
 
         // Toast Notification Function
         window.showToast = function(msg) {
@@ -351,18 +385,98 @@
             document.getElementById(id).classList.add('active-section');
             if(el) el.classList.add('active');
 
-            // Close sidebar automatically on mobile after clicking a menu item
             if(window.innerWidth <= 768) {
                 document.querySelector('.sidebar').classList.remove('open');
                 document.getElementById('overlay').classList.remove('active');
             }
         }
 
-        // Global Delete Function
+        // Global Delete Single Data
         window.deleteData = function(path, key) {
             if(confirm('Are you sure you want to delete this?')) {
                 remove(ref(db, `${path}/${key}`)).then(() => showToast('Deleted successfully!'));
             }
+        }
+
+        // --- Multi-Select & Bulk Delete Logic ---
+        window.updateBulkDeleteUI = function() {
+            const checkedBoxes = document.querySelectorAll('.item-checkbox[data-key]:checked');
+            const bulkBtn = document.getElementById('bulk-delete-btn');
+            const countSpan = document.getElementById('selected-count');
+            const selectAllCb = document.getElementById('select-all-apps');
+            const totalBoxes = document.querySelectorAll('.item-checkbox[data-key]');
+
+            if (countSpan) countSpan.innerText = checkedBoxes.length;
+            
+            if (checkedBoxes.length > 0) {
+                if (bulkBtn) bulkBtn.style.display = 'inline-flex';
+            } else {
+                if (bulkBtn) bulkBtn.style.display = 'none';
+            }
+
+            if (selectAllCb && totalBoxes.length > 0) {
+                selectAllCb.checked = (checkedBoxes.length === totalBoxes.length);
+            }
+        }
+
+        window.toggleSelectAllApps = function(masterCb) {
+            const checkboxes = document.querySelectorAll('.item-checkbox[data-key]');
+            checkboxes.forEach(cb => cb.checked = masterCb.checked);
+            updateBulkDeleteUI();
+        }
+
+        window.deleteSelectedApps = function() {
+            const checkedBoxes = document.querySelectorAll('.item-checkbox[data-key]:checked');
+            if (checkedBoxes.length === 0) return;
+
+            if (confirm(`Are you sure you want to delete ${checkedBoxes.length} selected app(s)?`)) {
+                const deletePromises = [];
+                checkedBoxes.forEach(cb => {
+                    const key = cb.getAttribute('data-key');
+                    if (key) {
+                        deletePromises.push(remove(ref(db, `latest_updates/${key}`)));
+                    }
+                });
+
+                Promise.all(deletePromises)
+                    .then(() => {
+                        showToast(`${checkedBoxes.length} App(s) deleted successfully!`);
+                        const selectAllCb = document.getElementById('select-all-apps');
+                        if (selectAllCb) selectAllCb.checked = false;
+                        updateBulkDeleteUI();
+                    })
+                    .catch(err => {
+                        showToast('Error deleting apps!');
+                        console.error(err);
+                    });
+            }
+        }
+
+        // --- Edit App Logic ---
+        window.editApp = function(key) {
+            const item = loadedAppsData[key];
+            if (!item) return;
+
+            document.getElementById('editing-app-key').value = key;
+            document.getElementById('app-title').value = item.title || '';
+            document.getElementById('app-category').value = item.category || 'General';
+            document.getElementById('app-image').value = item.image_url || '';
+            document.getElementById('app-download').value = item.download_url || '';
+            document.getElementById('app-version').value = item.version || 'v1.0';
+            document.getElementById('app-downloads-count').value = item.downloads !== undefined ? item.downloads : 0;
+
+            document.getElementById('app-submit-btn').innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            document.getElementById('cancel-edit-btn').style.display = 'block';
+
+            document.getElementById('apps').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.resetAppForm = function() {
+            document.getElementById('editing-app-key').value = '';
+            document.getElementById('app-form').reset();
+            document.getElementById('app-downloads-count').value = 0;
+            document.getElementById('app-submit-btn').innerHTML = '<i class="fas fa-plus"></i> Upload App';
+            document.getElementById('cancel-edit-btn').style.display = 'none';
         }
 
         // Auth Listener
@@ -415,9 +529,10 @@
                 document.getElementById('stat-cats').innerText = count;
             });
 
-            // 2. Apps
+            // 2. Apps (with Checkbox & Edit capability)
             onValue(ref(db, 'latest_updates'), snap => {
                 const data = snap.val();
+                loadedAppsData = data || {};
                 let count = 0;
                 document.getElementById('app-list').innerHTML = '';
                 if(data) {
@@ -427,14 +542,22 @@
                         document.getElementById('app-list').innerHTML += `
                             <div class="list-item">
                                 <div class="item-info">
-                                    <img src="${item.image_url}" class="item-img">
-                                    <div class="item-text"><h4>${item.title}</h4><p>${item.category} • ${item.version}</p></div>
+                                    <input type="checkbox" class="item-checkbox" data-key="${key}" onchange="updateBulkDeleteUI()">
+                                    <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/40'">
+                                    <div class="item-text">
+                                        <h4>${item.title}</h4>
+                                        <p>${item.category} • ${item.version} • <i class="fas fa-download"></i> ${item.downloads || 0}</p>
+                                    </div>
                                 </div>
-                                <button class="del-btn" onclick="deleteData('latest_updates', '${key}')"><i class="fas fa-trash"></i></button>
+                                <div class="action-btns">
+                                    <button class="edit-btn" title="Edit App" onclick="editApp('${key}')"><i class="fas fa-pen"></i></button>
+                                    <button class="del-btn" title="Delete App" onclick="deleteData('latest_updates', '${key}')"><i class="fas fa-trash"></i></button>
+                                </div>
                             </div>`;
                     });
                 }
                 document.getElementById('stat-apps').innerText = count;
+                updateBulkDeleteUI();
             });
 
             // 3. Tools
@@ -474,7 +597,7 @@
                 }
             });
 
-            // 5. Notices (Fixed Sync to user site 'notices' node)
+            // 5. Notices
             onValue(ref(db, 'notices'), snap => {
                 const data = snap.val();
                 let count = 0;
@@ -495,27 +618,47 @@
 
         // --- Form Submissions ---
 
-        // Category
+        // Category Form
         document.getElementById('cat-form').addEventListener('submit', e => {
             e.preventDefault();
             push(ref(db, 'categories'), { name: document.getElementById('cat-name').value })
             .then(() => { showToast('Category Added!'); e.target.reset(); });
         });
 
-        // App
+        // App Form (Handles both Create & Update with Manual Downloads Count)
         document.getElementById('app-form').addEventListener('submit', e => {
             e.preventDefault();
-            push(ref(db, 'latest_updates'), {
+            const editKey = document.getElementById('editing-app-key').value;
+            const appData = {
                 title: document.getElementById('app-title').value,
                 category: document.getElementById('app-category').value,
                 image_url: document.getElementById('app-image').value,
                 download_url: document.getElementById('app-download').value,
                 version: document.getElementById('app-version').value,
-                downloads: 0, rating: 4.8
-            }).then(() => { showToast('App Uploaded!'); e.target.reset(); });
+                downloads: parseInt(document.getElementById('app-downloads-count').value) || 0,
+                rating: 4.8
+            };
+
+            if (editKey) {
+                // Update existing app
+                update(ref(db, `latest_updates/${editKey}`), appData)
+                .then(() => {
+                    showToast('App Updated Successfully!');
+                    resetAppForm();
+                })
+                .catch(() => showToast('Failed to update app!'));
+            } else {
+                // Push new app
+                push(ref(db, 'latest_updates'), appData)
+                .then(() => {
+                    showToast('App Uploaded!');
+                    resetAppForm();
+                })
+                .catch(() => showToast('Failed to upload app!'));
+            }
         });
 
-        // Tool
+        // Tool Form
         document.getElementById('tool-form').addEventListener('submit', e => {
             e.preventDefault();
             push(ref(db, 'tools_modules'), {
@@ -526,7 +669,7 @@
             }).then(() => { showToast('Tool Added!'); e.target.reset(); });
         });
 
-        // Article
+        // Article Form
         document.getElementById('article-form').addEventListener('submit', e => {
             e.preventDefault();
             push(ref(db, 'site_updates'), {
@@ -536,7 +679,7 @@
             }).then(() => { showToast('Article Published!'); e.target.reset(); });
         });
 
-        // Notice (Fixed Schema to match User Site)
+        // Notice Form
         document.getElementById('notice-form').addEventListener('submit', e => {
             e.preventDefault();
             push(ref(db, 'notices'), {
