@@ -267,7 +267,7 @@
         .error-msg { color: var(--danger-color); font-size: 11px; margin-top: 6px; display: none; font-weight: 600; }
     </style>
 
-    <!-- Mobile Layout Overflow Fixes (Added without modifying previous code) -->
+    <!-- Mobile Layout Overflow Fixes -->
     <style>
         html, body {
             overflow-x: hidden !important;
@@ -644,7 +644,7 @@
         let loadedArticlesData = {};
         let loadedNoticesData = {};
         let loadedBannersData = {};
-        let toastTimeout; // Added variable to fix overlapping toast notifications
+        let toastTimeout;
 
         window.showToast = function(msg) {
             const toast = document.getElementById('toast');
@@ -835,9 +835,9 @@
                 const ads = snap.val() || {};
                 document.getElementById('ad-master-status').checked = ads.master_status === true;
                 document.getElementById('ad-adsterra-link').value = ads.adsterra_link || '';
-                document.getElementById('ad-banner-img').value = ads.banner_img || '';
-                document.getElementById('ad-banner-target').value = ads.banner_target || '';
-                document.getElementById('ad-custom-script').value = ads.custom_script || '';
+                document.getElementById('ad-banner-img').value = ads.banner_img || ads.banner_image || '';
+                document.getElementById('ad-banner-target').value = ads.banner_target || ads.banner_url || '';
+                document.getElementById('ad-custom-script').value = ads.custom_script || ads.banner_html || '';
                 
                 const statAds = document.getElementById('stat-ads-status');
                 statAds.innerText = ads.master_status === true ? "ON" : "OFF";
@@ -848,7 +848,6 @@
                 const data = snap.val();
                 let count = 0;
                 
-                // Fetch previous selected category logic to prevent form reset while updating
                 const appCatElement = document.getElementById('app-category');
                 const previousSelectedCategory = appCatElement.value;
                 
@@ -879,7 +878,7 @@
                 const data = snap.val();
                 loadedAppsData = data || {};
                 let count = 0;
-                let html = ''; // optimized variable for inserting DOM elements
+                let html = '';
                 if(data) {
                     Object.keys(data).forEach(key => {
                         count++;
@@ -1039,16 +1038,25 @@
             });
         }
 
+        /* 💡 বিজ্ঞাপন ডাটা সেভ আপডেট (উভয় ফরম্যাটে সেভ করা হবে যাতে ইউজার সাইট সহজেই পড়তে পারে) */
         document.getElementById('ad-settings-form').addEventListener('submit', e => {
             e.preventDefault();
+            const bannerImg = document.getElementById('ad-banner-img').value;
+            const bannerTarget = document.getElementById('ad-banner-target').value;
+            const customScript = document.getElementById('ad-custom-script').value;
+
             const adData = {
                 master_status: document.getElementById('ad-master-status').checked,
                 adsterra_link: document.getElementById('ad-adsterra-link').value,
-                banner_img: document.getElementById('ad-banner-img').value,
-                banner_target: document.getElementById('ad-banner-target').value,
-                custom_script: document.getElementById('ad-custom-script').value
+                banner_img: bannerImg,
+                banner_target: bannerTarget,
+                custom_script: customScript,
+                // ইউজার সাইটের ডাটা ম্যাচিং নিশ্চিত করার জন্য:
+                banner_image: bannerImg,
+                banner_url: bannerTarget,
+                banner_html: customScript
             };
-            set(ref(db, 'ad_settings'), adData).then(() => showToast('Ad Settings Updated!'));
+            set(ref(db, 'ad_settings'), adData).then(() => showToast('Ad Settings Updated Successfully!'));
         });
 
         document.getElementById('app-form').addEventListener('submit', e => {
