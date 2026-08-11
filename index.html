@@ -644,12 +644,14 @@
         let loadedArticlesData = {};
         let loadedNoticesData = {};
         let loadedBannersData = {};
+        let toastTimeout; // Added variable to fix overlapping toast notifications
 
         window.showToast = function(msg) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         window.toggleSidebar = function() {
@@ -845,20 +847,31 @@
             onValue(ref(db, 'categories'), snap => {
                 const data = snap.val();
                 let count = 0;
-                document.getElementById('cat-list').innerHTML = '';
-                document.getElementById('app-category').innerHTML = '<option value="General">General</option>';
+                
+                // Fetch previous selected category logic to prevent form reset while updating
+                const appCatElement = document.getElementById('app-category');
+                const previousSelectedCategory = appCatElement.value;
+                
+                let catListHTML = '';
+                let catOptionsHTML = '<option value="General">General</option>';
+                
                 if(data) {
                     Object.keys(data).forEach(key => {
                         count++;
                         let name = data[key].name;
-                        document.getElementById('app-category').innerHTML += `<option value="${name}">${name}</option>`;
-                        document.getElementById('cat-list').innerHTML += `
+                        catOptionsHTML += `<option value="${name}">${name}</option>`;
+                        catListHTML += `
                             <div class="list-item">
                                 <div class="item-text"><h4>${name}</h4></div>
                                 <button class="del-btn" onclick="deleteData('categories', '${key}')"><i class="fas fa-trash"></i></button>
                             </div>`;
                     });
                 }
+                
+                document.getElementById('cat-list').innerHTML = catListHTML;
+                appCatElement.innerHTML = catOptionsHTML;
+                if(previousSelectedCategory) appCatElement.value = previousSelectedCategory;
+                
                 document.getElementById('stat-cats').innerText = count;
             });
 
@@ -866,12 +879,12 @@
                 const data = snap.val();
                 loadedAppsData = data || {};
                 let count = 0;
-                document.getElementById('app-list').innerHTML = '';
+                let html = ''; // optimized variable for inserting DOM elements
                 if(data) {
                     Object.keys(data).forEach(key => {
                         count++;
                         let item = data[key];
-                        document.getElementById('app-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-info">
                                     <input type="checkbox" class="item-checkbox" data-key="${key}" onchange="updateBulkDeleteUI()">
@@ -888,6 +901,7 @@
                             </div>`;
                     });
                 }
+                document.getElementById('app-list').innerHTML = html;
                 document.getElementById('stat-apps').innerText = count;
                 updateBulkDeleteUI();
             });
@@ -896,12 +910,12 @@
                 const data = snap.val();
                 loadedToolsData = data || {};
                 let count = 0;
-                document.getElementById('tool-list').innerHTML = '';
+                let html = ''; 
                 if(data) {
                     Object.keys(data).forEach(key => {
                         count++;
                         let item = data[key];
-                        document.getElementById('tool-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-info">
                                     <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/36'">
@@ -917,17 +931,18 @@
                             </div>`;
                     });
                 }
+                document.getElementById('tool-list').innerHTML = html;
                 document.getElementById('stat-tools').innerText = count;
             });
 
             onValue(ref(db, 'site_updates'), snap => {
                 const data = snap.val();
                 loadedArticlesData = data || {};
-                document.getElementById('article-list').innerHTML = '';
+                let html = '';
                 if(data) {
                     Object.keys(data).forEach(key => {
                         let item = data[key];
-                        document.getElementById('article-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-text">
                                     <h4>${item.title}</h4>
@@ -940,18 +955,19 @@
                             </div>`;
                     });
                 }
+                document.getElementById('article-list').innerHTML = html;
             });
 
             onValue(ref(db, 'notices'), snap => {
                 const data = snap.val();
                 loadedNoticesData = data || {};
                 let count = 0;
-                document.getElementById('notice-list').innerHTML = '';
+                let html = '';
                 if(data) {
                     Object.keys(data).forEach(key => {
                         count++;
                         let item = data[key];
-                        document.getElementById('notice-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-text">
                                     <h4>${item.title}</h4>
@@ -964,17 +980,18 @@
                             </div>`;
                     });
                 }
+                document.getElementById('notice-list').innerHTML = html;
                 document.getElementById('stat-notices').innerText = count;
             });
 
             onValue(ref(db, 'banners'), snap => {
                 const data = snap.val();
                 loadedBannersData = data || {};
-                document.getElementById('banner-list').innerHTML = '';
+                let html = '';
                 if(data) {
                     Object.keys(data).forEach(key => {
                         let item = data[key];
-                        document.getElementById('banner-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-info">
                                     <img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/36'">
@@ -990,15 +1007,16 @@
                             </div>`;
                     });
                 }
+                document.getElementById('banner-list').innerHTML = html;
             });
 
             onValue(ref(db, 'user_messages'), snap => {
                 const data = snap.val();
-                document.getElementById('message-list').innerHTML = '';
                 if(data) {
+                    let html = '';
                     Object.keys(data).forEach(key => {
                         let item = data[key];
-                        document.getElementById('message-list').innerHTML += `
+                        html += `
                             <div class="list-item">
                                 <div class="item-text">
                                     <h4 style="color:var(--accent-color);">${item.name || 'User'}</h4>
@@ -1007,6 +1025,7 @@
                                 <button class="del-btn" onclick="deleteData('user_messages', '${key}')"><i class="fas fa-trash"></i></button>
                             </div>`;
                     });
+                    document.getElementById('message-list').innerHTML = html;
                 } else {
                     document.getElementById('message-list').innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:12px; font-size:11px;">No messages yet.</p>`;
                 }
